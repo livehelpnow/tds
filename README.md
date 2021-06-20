@@ -1,13 +1,17 @@
 # Tds - MSSQL Driver for Elixir
 
-[![Hex.pm](https://img.shields.io/hexpm/v/tds.svg)](https://hex.pm/packages/tds) 
-[![Coverage Status](https://coveralls.io/repos/github/livehelpnow/tds/badge.svg?branch=support-1.1)](https://coveralls.io/github/livehelpnow/tds?branch=master)
 ![Elixir TDS CI](https://github.com/livehelpnow/tds/workflows/Elixir%20TDS%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/livehelpnow/tds/badge.svg?branch=support-1.1)](https://coveralls.io/github/livehelpnow/tds?branch=master)
+[![Module Version](https://img.shields.io/hexpm/v/tds.svg)](https://hex.pm/packages/tds)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/tds/)
+[![Total Download](https://img.shields.io/hexpm/dt/tds.svg)](https://hex.pm/packages/tds)
+[![License](https://img.shields.io/hexpm/l/tds.svg)](https://github.com/livehelpnow/tds/blob/master/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/livehelpnow/tds.svg)](https://github.com/livehelpnow/tds/commits/master)
 
 MSSQL / TDS Database driver for Elixir.
 
-### NOTE: 
-Since TDS version 2.0, `tds_ecto` package is deprecated, this version supports `ecto_sql` since version 3.3.4. 
+### NOTE:
+Since TDS version 2.0, `tds_ecto` package is deprecated, this version supports `ecto_sql` since version 3.3.4.
 
 Please check out the issues for a more complete overview. This branch should not be considered stable or ready for production yet.
 
@@ -24,8 +28,8 @@ def deps do
 end
 ```
 
-As of TDS version `>= 1.2`, tds can support windows codepages other than `windows-1252` (latin1). 
-If you need such support you will need to include additional dependency `{:tds_encoding, "~> 1.0"}` 
+As of TDS version `>= 1.2`, tds can support windows codepages other than `windows-1252` (latin1).
+If you need such support you will need to include additional dependency `{:tds_encoding, "~> 1.0"}`
 and configure `:tds` app to use `Tds.Encoding` module like this:
 
 
@@ -35,12 +39,12 @@ import Mix.Config
 config :tds, :text_encoder, Tds.Encoding
 ```
 
-Note that `:tds_encoding` requires Rust compiler installed in order to compile nif. 
-In previous versions only SQL_Latin1_General was suported (codepage `windows-1252`). 
-Please follow instructions at [rust website](https://www.rust-lang.org/tools/install) 
+Note that `:tds_encoding` requires Rust compiler installed in order to compile nif.
+In previous versions only SQL_Latin1_General was supported (codepage `windows-1252`).
+Please follow instructions at [rust website](https://www.rust-lang.org/tools/install)
 to install rust.
 
-When you are done, run `mix deps.get` in your shell to fetch and compile Tds. 
+When you are done, run `mix deps.get` in your shell to fetch and compile Tds.
 Start an interactive Elixir shell with `iex -S mix`.
 
 ```iex
@@ -68,17 +72,17 @@ Example configuration
 import Mix.Config
 
 config :your_app, :tds_conn,
-  hostname: "localhost", 
-  username: "test_user", 
-  password: "test_password", 
-  database: "test_db", 
+  hostname: "localhost",
+  username: "test_user",
+  password: "test_password",
+  database: "test_db",
   port: 1433
 ```
 
 Then using `Application.get_env(:your_app, :tds_conn)` use this as first parameter in `Tds.start_link/1` function.
 
-There is additional parameter that can be used in configuration and 
-can improve query execution in SQL Server. If you find out that 
+There is additional parameter that can be used in configuration and
+can improve query execution in SQL Server. If you find out that
 your queries suffer from "density estimation" as described [here](https://www.brentozar.com/archive/2018/03/sp_prepare-isnt-good-sp_executesql-performance/)
 
 you can try switching how tds executes queries as below:
@@ -87,15 +91,15 @@ you can try switching how tds executes queries as below:
 import Mix.Config
 
 config :your_app, :tds_conn,
-  hostname: "localhost", 
-  username: "test_user", 
-  password: "test_password", 
-  database: "test_db", 
+  hostname: "localhost",
+  username: "test_user",
+  password: "test_password",
+  database: "test_db",
   port: 1433,
   execution_mode: :executesql
 ```
-This will skip calling `sp_prepare` and query will be executed using `sp_executesql` instead. 
-Please note that only one execution mode can be set at a time, and SQL Server will probably 
+This will skip calling `sp_prepare` and query will be executed using `sp_executesql` instead.
+Please note that only one execution mode can be set at a time, and SQL Server will probably
 use single execution plan (since it is NOT estimated by checking data density!).
 
 ## Connecting to SQL Server Instances
@@ -113,8 +117,8 @@ Since v1.0.16, additional connection parameters are:
   - `:set_allow_snapshot_isolation` - atom, one of `:on | :off`
   - `:set_read_committed_snapshot` - atom, one of `:on | :off`
 
-Set this option to enable snapshot isolation on the database level. 
-Requires connecting with a user with appropriate rights. 
+Set this option to enable snapshot isolation on the database level.
+Requires connecting with a user with appropriate rights.
 More info [here](https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/snapshot-isolation-in-sql-server).
 
 ## Data representation
@@ -160,7 +164,7 @@ Note that the DateTimeOffset tuple expects the date and time in UTC and the offs
 format](https://dba.stackexchange.com/a/121878), and these mixed-endian UUIDs
 are returned in [Tds.Result](https://hexdocs.pm/tds/Tds.Result.html).
 
-To convert a mixed-endian UUID binary to a big-endian string, use 
+To convert a mixed-endian UUID binary to a big-endian string, use
 [Tds.Types.UUID.load/1](https://hexdocs.pm/tds/Tds.Types.UUID.html#load/1)
 
 To convert a big-endian UUID string to a mixed-endian binary, use
@@ -182,11 +186,11 @@ use it for the first time.
 
 ### Development SQL Server Setup
 
-The tests require an SQL Server database to be available on localhost. 
+The tests require an SQL Server database to be available on localhost.
 If you are not using Windows OS you can start sql server instance using Docker.
 Official SQL Server Docker image can be found [here](https://hub.docker.com/r/microsoft/mssql-server-linux).
 
-If you do not have specific requirements on how you would like to start sql server 
+If you do not have specific requirements on how you would like to start sql server
 in docker, you can use script for this repo.
 
 ```bash
@@ -213,9 +217,9 @@ Thanks to [ericmj](https://github.com/ericmj), this driver takes a lot of inspir
 
 Also thanks to everyone in the Elixir Google group and on the Elixir IRC Channel.
 
-## License
+## Copyright and License
 
-Copyright 2014, 2015, 2017 LiveHelpNow
+Copyright 2015 LiveHelpNow
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
