@@ -1,14 +1,18 @@
 defmodule Tds.Mixfile do
-  @moduledoc false
   use Mix.Project
 
+  @source_url "https://github.com/livehelpnow/tds"
   @version "2.1.3"
+
   def project do
     [
       app: :tds,
       version: @version,
       elixir: "~> 1.0",
+      name: "Tds",
       deps: deps(),
+      docs: docs(),
+      package: package(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -16,23 +20,11 @@ defmodule Tds.Mixfile do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      description: description(),
-      package: package(),
       xref: [exclude: [:ssl]],
       rustler_crates: [
         tds_encoding: [
-          mode: (if Mix.env() == :prod, do: :release, else: :debug)
+          mode: if(Mix.env() == :prod, do: :release, else: :debug)
         ]
-      ],
-
-      # Docs
-      name: "Tds",
-      source_url: "https://github.com/livehelpnow/tds",
-      docs: [
-        main: "readme",
-        extras: ["README.md", "CHANGELOG.md"],
-        source_ref: "v#{@version}",
-        source_url: "https://github.com/livehelpnow/tds"
       ]
     ]
   end
@@ -48,32 +40,42 @@ defmodule Tds.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:binpp, ">= 0.0.0", only: [:dev, :test]},
-      {:decimal, "~> 1.6"},
-      {:jason, "~> 1.0", optional: true},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:db_connection, "~> 2.0"},
+      {:decimal, "~> 1.6"},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.7", only: :test},
-      {:ex_doc, "~> 0.19", only: :dev},
+      {:jason, "~> 1.0", optional: true},
       {:tds_encoding, "~> 1.0", optional: true, only: :test},
       {:tzdata, "~> 1.0", optional: true, only: :test}
     ]
   end
 
-  defp description do
-    """
-    Microsoft SQL Server client (Elixir implementation of the MS TDS protocol)
-    """
-  end
-
   defp package do
     [
       name: "tds",
-      files: ["lib", "mix.exs", "README*"],
+      description:
+        "Microsoft SQL Server client (Elixir implementation of the MS TDS protocol)",
+      files: ["lib", "mix.exs", "README*", "CHANGELOG*", "LICENSE*"],
       maintainers: ["Eric Witchin", "Milan Jaric"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: %{"Github" => "https://github.com/livehelpnow/tds"}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: [
+        "CHANGELOG.md": [title: "Changelog"],
+        LICENSE: [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: "v#{@version}",
+      formatters: ["html"]
     ]
   end
 end

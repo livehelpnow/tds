@@ -6,7 +6,6 @@ defmodule Tds.Perf do
   @minute       @second * 60
   @hour         @minute * 60
 
-
   def to_string(misec) do
     cond do
       0.9 < misec / @hour ->
